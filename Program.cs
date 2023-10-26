@@ -44,7 +44,8 @@ namespace Caligo.SqlToOpenApi3Schemas
           GenerateSchemas(connectionString, schema, outputPath);
           Environment.Exit((int)ExitCode.Success);
         }
-        else {
+        else
+        {
           Environment.Exit((int)ExitCode.MissingArguments);
         }
       });
@@ -152,8 +153,15 @@ namespace Caligo.SqlToOpenApi3Schemas
             property.OpenApiType = "boolean";
             break;
           }
-        case "decimal":
         case "float":
+          {
+            property.CSharpType = "double";
+            property.OpenApiType = "number";
+            property.OpenApiFormat = "double";
+
+            break;
+          }
+        case "decimal":
         case "money":
         case "numeric":
         case "smallmoney":
@@ -177,7 +185,7 @@ namespace Caligo.SqlToOpenApi3Schemas
           {
             property.CSharpType = "short";
             property.OpenApiType = "integer";
-            property.OpenApiFormat = "int32";
+            property.OpenApiFormat = "int16";
             break;
           }
         case "int":
