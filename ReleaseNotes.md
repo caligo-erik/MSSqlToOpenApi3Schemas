@@ -1,3 +1,7 @@
+### 1.0.6
+- fixed: db time is now format time-span and C# type TimeSpan
+- single C# type is now upper case
+
 ### 1.0.5
 - Added release notes to package
 

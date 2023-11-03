@@ -174,7 +174,7 @@ namespace Caligo.SqlToOpenApi3Schemas
           }
         case "real":
           {
-            property.CSharpType = "single";
+            property.CSharpType = "Single";
             property.OpenApiType = "number";
             property.OpenApiFormat = "single";
             property.NumericPrecision = column.NUMERIC_PRECISION;
@@ -216,7 +216,7 @@ namespace Caligo.SqlToOpenApi3Schemas
           {
             property.CSharpType = "TimeSpan";
             property.OpenApiType = "string";
-            property.OpenApiFormat = "date-time";
+            property.OpenApiFormat = "time-span";
             break;
           }
         case "char":
