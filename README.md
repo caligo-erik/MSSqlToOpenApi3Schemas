@@ -26,3 +26,10 @@ You can also specify the output path for the schemas.yaml file:
 ```bash
 SqlToOpenApi3Schemas -c "your-connection-string" -o outputPath
 ```
+
+### CRUD paths
+
+You can specify the fileName and prefix for the crud paths
+```bash
+SqlToOpenApi3Schemas -c "your-connection-string" --pathPrefix /api/data --paths pathsFileName
+```

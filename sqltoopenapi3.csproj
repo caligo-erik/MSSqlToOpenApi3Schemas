@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <PackageId>Caligo.SqlToOpenApi3Schemas</PackageId>
-    <Version>1.0.6</Version>
+    <Version>1.1.0</Version>
     <Authors>Erik Norman</Authors>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -17,7 +17,7 @@
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageReleaseNotes>ReleaseNotes.md</PackageReleaseNotes>
     <PackageTags>MS SQL Server;OpenAPI3;schemas</PackageTags>
-    <Description>This is a command-line tool that extracts schema information from a Microsoft SQL Server database and generates the schemas.yaml to be used in an OpenAPI 3 specification.</Description>
+    <Description>This is a command-line tool that extracts schema information from a Microsoft SQL Server database and generates the schemas.yaml and paths.yaml to be used in an OpenAPI 3 specification.</Description>
     <RepositoryUrl>https://github.com/caligo-erik/MSSqlToOpenApi3Schemas</RepositoryUrl>
     <PackageIcon>icon.png</PackageIcon>
     <RepositoryType>git</RepositoryType>

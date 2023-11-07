@@ -1,3 +1,6 @@
+### 1.1.0
+- Added output of paths.yaml to access all tables with get, post, delete methods. Will consider using template files in future versions.
+
 ### 1.0.6
 - fixed: db time is now format time-span and C# type TimeSpan
 - single C# type is now upper case

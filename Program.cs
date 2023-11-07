@@ -2,6 +2,7 @@
 using Dapper;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Text;
 using YamlDotNet.Serialization;
 
 namespace Caligo.SqlToOpenApi3Schemas
@@ -25,6 +26,90 @@ namespace Caligo.SqlToOpenApi3Schemas
 
     [Option('o', "output", Default = "schemas.yaml", HelpText = "Output file path.")]
     public string OutputPath { get; set; }
+
+    [Option('p', "paths", HelpText = "paths file name. If this parameter or pathPrefix are specified, the tool will generate the OpenAPI 3.0 paths to access the tables.")]
+    public string PathsFileName { get; set; }
+
+    [Option("pathPrefix", HelpText = "prefix to be added to the path, e.g. /v1/data. If this parameter or pathPrefix are specified, the tool will generate the OpenAPI 3.0 paths to access the tables.")]
+    public string PathPrefix { get; set; }
+  }
+
+  class CrudPath
+  {
+    public const string pathTemplate = @"[PATH_PREFIX]/[SCHEMA_NAME]:
+  get:
+    security:
+      - bearerAuth: []
+    tags:
+      - CRUDs
+    responses:
+      '200':
+        description: [SCHEMA_NAME]
+        content:
+          application/json:
+            schema:
+              properties:
+                success:
+                  type: array
+                  items:
+                    $ref: ./schemas/schemas.yaml#/[SCHEMA_NAME]
+                error:
+                  $ref: ./schemas/subschemas.yaml#/Error
+  post:
+    security:
+      - bearerAuth: []
+    tags:
+      - CRUDs
+    requestBody:
+      content:
+        application/json:
+          schema:
+            items:
+              $ref: ./schemas/schemas.yaml#/[SCHEMA_NAME]
+    responses:
+      '200':
+        description: [SCHEMA_NAME]
+        content:
+          application/json:
+            schema:
+              properties:
+                success:
+                  $ref: ./schemas/schemas.yaml#/[SCHEMA_NAME]
+                error:
+                  $ref: ./schemas/subschemas.yaml#/Error
+  delete:
+    security:
+      - bearerAuth: []
+    tags:
+      - CRUDs
+    requestBody:
+      content:
+        application/json:
+          schema:
+            items:
+              $ref: ./schemas/schemas.yaml#/[SCHEMA_NAME]
+    responses:
+      '200':
+        description: [SCHEMA_NAME]
+        content:
+          application/json:
+            schema:
+              properties:
+                success:
+                  $ref: ./schemas/schemas.yaml#/[SCHEMA_NAME]
+                error:
+                  $ref: ./schemas/subschemas.yaml#/Error";
+
+    public static string GetPaths(List<string> tableNames, string pathPrefix)
+    {
+      StringBuilder sb = new StringBuilder();
+
+      foreach (var tableName in tableNames)
+      {
+        sb.AppendLine(pathTemplate.Replace("[SCHEMA_NAME]", tableName).Replace("[PATH_PREFIX]", pathPrefix));
+      }
+      return sb.ToString();
+    }
   }
 
   class Program
@@ -38,10 +123,12 @@ namespace Caligo.SqlToOpenApi3Schemas
         string connectionString = options.ConnectionString;
         string schema = options.Schema;
         string outputPath = options.OutputPath;
+        string pathsFileName = options.PathsFileName;
+        string pathPrefix = options.PathPrefix;
 
         if (!string.IsNullOrWhiteSpace(connectionString))
         {
-          GenerateSchemas(connectionString, schema, outputPath);
+          GenerateSchemas(connectionString, schema, outputPath, pathsFileName, pathPrefix);
           Environment.Exit((int)ExitCode.Success);
         }
         else
@@ -51,7 +138,7 @@ namespace Caligo.SqlToOpenApi3Schemas
       });
     }
 
-    private static void GenerateSchemas(string connectionString, string schemaName, string outputPath)
+    private static void GenerateSchemas(string connectionString, string schemaName, string outputPath, string pathsFileName, string pathPrefix)
     {
       try
       {
@@ -97,7 +184,13 @@ namespace Caligo.SqlToOpenApi3Schemas
           var schema = schemas[key.TABLE_NAME];
           schema.PrimaryKeys.Add(key.COLUMN_NAME);
         }
-        CreateYaml(outputPath, schemas);
+        CreateSchemaYaml(outputPath, schemas);
+
+        if (!string.IsNullOrWhiteSpace(pathsFileName) || !string.IsNullOrWhiteSpace(pathPrefix))
+        {
+          var paths = CrudPath.GetPaths(schemas.Keys.ToList(), pathPrefix);
+          CreatePathsYaml(pathsFileName, paths);
+        }
       }
       catch (System.Exception ex)
       {
@@ -107,7 +200,7 @@ namespace Caligo.SqlToOpenApi3Schemas
       }
     }
 
-    private static void CreateYaml(string outputPath, Dictionary<string, Schema> schemas)
+    private static void CreateSchemaYaml(string outputPath, Dictionary<string, Schema> schemas)
     {
       try
       {
@@ -121,6 +214,21 @@ namespace Caligo.SqlToOpenApi3Schemas
         Console.WriteLine($"Writing to file: {filePath}");
         // Write the YAML string to the file
         File.WriteAllText(filePath, yaml);
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine($"An error occurred: {ex.Message}");
+        Console.WriteLine(ex.StackTrace);
+        Environment.Exit((int)ExitCode.IOError);
+      }
+    }
+
+    private static void CreatePathsYaml(string pathsFileName, string paths)
+    {
+      try
+      {
+        string filePath = !string.IsNullOrEmpty(pathsFileName) ? pathsFileName : "paths.yaml";
+        File.WriteAllText(filePath, paths);
       }
       catch (Exception ex)
       {

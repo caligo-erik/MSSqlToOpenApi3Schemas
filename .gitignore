@@ -4,3 +4,5 @@
 publish.cmd
 schemas.yaml
 .vscode/
+
+paths.yaml
