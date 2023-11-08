@@ -1,3 +1,6 @@
+### 1.1.1
+- Added x-weakschema to all schemas where all properties are primary keys.
+
 ### 1.1.0
 - Added output of paths.yaml to access all tables with get, post, delete methods. Will consider using template files in future versions.
 

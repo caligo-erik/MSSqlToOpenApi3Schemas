@@ -2,6 +2,9 @@
 
 This is a command-line tool that extracts schema information from a Microsoft SQL Server database and generates the schemas.yaml to be used in an OpenAPI 3 specification.
 
+## Bugs
+Please report any bugs on Github: https://github.com/caligo-erik/MSSqlToOpenApi3Schemas/issues
+
 ## Usage
 
 Once Caligo.SqlToOpenApi3Schemas is installed, you can use it from the command line as follows:

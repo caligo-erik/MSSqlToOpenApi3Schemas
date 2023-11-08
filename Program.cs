@@ -184,6 +184,13 @@ namespace Caligo.SqlToOpenApi3Schemas
           var schema = schemas[key.TABLE_NAME];
           schema.PrimaryKeys.Add(key.COLUMN_NAME);
         }
+        foreach (var schema in schemas.Values) {
+          if (schema.PrimaryKeys.Count == schema.Properties.Count) {
+            // all properties are primary keys -> weak table
+            schema.IsWeakSchema = true;
+          }
+        }
+        
         CreateSchemaYaml(outputPath, schemas);
 
         if (!string.IsNullOrWhiteSpace(pathsFileName) || !string.IsNullOrWhiteSpace(pathPrefix))
@@ -384,6 +391,9 @@ namespace Caligo.SqlToOpenApi3Schemas
     public Dictionary<string, Property> Properties = new Dictionary<string, Property>();
     [YamlMember(Alias = "x-db-keys")]
     public List<string> PrimaryKeys = new List<string>();
+
+    [YamlMember(Alias = "x-weakschema")]
+    public bool? IsWeakSchema;
   }
 
   internal class Column

@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <PackageId>Caligo.SqlToOpenApi3Schemas</PackageId>
-    <Version>1.1.0</Version>
-    <Authors>Erik Norman</Authors>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>Caligo.SqlToOpenApi3Schemas</PackageId>
+    <Version>1.1.2</Version>
+    <Authors>Erik Norman</Authors>
     <Company>Caligo s.r.l.</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>README.md</PackageReadmeFile>
